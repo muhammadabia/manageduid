@@ -174,7 +174,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
 <div class="container">
 
   <!-- SETUP BANNER -->
-  <div class="setup-banner" id="setupBanner" style="display:none">
+  <div class="setup-banner" id="setupBanner">
     <h3>⚙️ Hubungkan ke Google Sheets</h3>
     <p>Paste URL Apps Script Anda di bawah. Lihat file <strong>PANDUAN_SETUP.md</strong> untuk langkah lengkapnya.</p>
     <div class="setup-input-row">
@@ -347,9 +347,14 @@ function getMonthKey() {
 
 // ── SCRIPT URL SETUP ──
 function checkSetup() {
-  if (!scriptUrl) {
+  const isValid = scriptUrl && scriptUrl.startsWith('https://script.google.com');
+  if (!isValid) {
+    scriptUrl = '';
+    localStorage.removeItem(SCRIPT_URL_KEY);
     document.getElementById('setupBanner').style.display = 'block';
     setSyncStatus('err','⚠️ Belum terhubung');
+    // still render with empty data
+    renderAll();
   } else {
     document.getElementById('setupBanner').style.display = 'none';
     fetchData();
@@ -611,8 +616,8 @@ function showToast(msg) {
 // ── INIT ──
 document.getElementById('topbarMonth').textContent = new Date().toLocaleDateString('id-ID',{month:'long',year:'numeric'});
 populateKategori();
-checkSetup();
 if (scriptUrl) document.getElementById('scriptUrlInput').value = scriptUrl;
+checkSetup();
 </script>
 </body>
 </html>
