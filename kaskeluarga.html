@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kas Keluarga</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A1628;
+  --navy2: #0f1f3d;
+  --teal: #0E6E8C;
+  --teal2: #1a9bbf;
+  --mint: #2CD4D9;
+  --gold: #F5A623;
+  --gold2: #e8941a;
+  --white: #ffffff;
+  --off: #f4f6f9;
+  --text: #1a2540;
+  --muted: #7a8aaa;
+  --danger: #e84545;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --abia: #2E86C1;
+  --abia-bg: #EAF4FB;
+  --putri: #D4AC0D;
+  --putri-bg: #FEF9E7;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --shadow: 0 2px 16px rgba(10,22,40,0.08);
+  --shadow-lg: 0 8px 40px rgba(10,22,40,0.14);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--off);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── TOP NAV ── */
+.topbar {
+  background: var(--navy);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 10px;
+  color: white; font-weight: 800; font-size: 17px; letter-spacing: -0.3px;
+}
+.topbar-brand span { color: var(--mint); }
+.topbar-month {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── LAYOUT ── */
+.container { max-width: 960px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── HERO SALDO ── */
+.saldo-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 50%, #0d2951 100%);
+  border-radius: 20px;
+  padding: 28px 32px;
+  color: white;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.saldo-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(44,212,217,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.saldo-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: 30%;
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.saldo-label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.saldo-amount { font-size: 38px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
+.saldo-amount.ok { color: var(--mint); }
+.saldo-amount.warn { color: var(--warning); }
+.saldo-amount.danger { color: var(--danger); }
+.saldo-sub { font-size: 13px; color: rgba(255,255,255,0.45); }
+.saldo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+.saldo-item {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.saldo-item-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; }
+.saldo-item-val { font-size: 19px; font-weight: 700; }
+.saldo-item-val.abia { color: #6ec6f5; }
+.saldo-item-val.putri { color: #ffd96a; }
+.saldo-item-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.saldo-item-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+.saldo-item-bar-fill.abia { background: var(--abia); }
+.saldo-item-bar-fill.putri { background: var(--putri); }
+
+/* ── BUDGET BARS ── */
+.budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.budget-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border-top: 3px solid;
+}
+.budget-card.abia { border-color: var(--abia); }
+.budget-card.putri { border-color: var(--putri); }
+.bc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.bc-title { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+.bc-badge {
+  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.bc-badge.abia { background: var(--abia-bg); color: var(--abia); }
+.bc-badge.putri { background: var(--putri-bg); color: #b8860b; }
+.bc-spent { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.bc-budget { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.bc-bar { height: 8px; background: var(--off); border-radius: 4px; margin: 12px 0 8px; overflow: hidden; }
+.bc-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.bc-bar-fill.abia { background: linear-gradient(90deg, var(--abia), var(--mint)); }
+.bc-bar-fill.putri { background: linear-gradient(90deg, var(--putri), #f5c842); }
+.bc-bar-fill.over { background: linear-gradient(90deg, var(--warning), var(--danger)); }
+.bc-footer { display: flex; justify-content: space-between; font-size: 12px; }
+.bc-sisa { font-weight: 700; }
+.bc-sisa.ok { color: var(--success); }
+.bc-sisa.warn { color: var(--warning); }
+.bc-sisa.danger { color: var(--danger); }
+
+/* ── QUICK INPUT ── */
+.input-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.section-title {
+  font-size: 15px; font-weight: 800; letter-spacing: -0.2px;
+  color: var(--text); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title .icon { font-size: 18px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+.form-input, .form-select {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text);
+  background: var(--off);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(14,110,140,0.1);
+  background: white;
+}
+.form-input.amount { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
+
+/* who buttons */
+.who-group { display: flex; gap: 8px; }
+.who-btn {
+  flex: 1; padding: 10px; border: 2px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--off);
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.who-btn small { font-size: 10px; font-weight: 500; opacity: 0.6; }
+.who-btn.active-abia { border-color: var(--abia); background: var(--abia-bg); color: var(--abia); }
+.who-btn.active-putri { border-color: var(--putri); background: var(--putri-bg); color: #8a6200; }
+
+.btn-submit {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--teal), var(--teal2));
+  color: white; border: none; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer; letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 4px;
+}
+.btn-submit:hover { opacity: 0.9; }
+.btn-submit:active { transform: scale(0.99); }
+
+/* ── KATEGORI BREAKDOWN ── */
+.breakdown-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.tab-group { display: flex; gap: 6px; margin-bottom: 18px; }
+.tab-btn {
+  padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+  background: var(--off); font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.15s; color: var(--muted);
+}
+.tab-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+.kat-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.kat-item:last-child { border-bottom: none; }
+.kat-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.kat-info { flex: 1; min-width: 0; }
+.kat-name { font-size: 13px; font-weight: 600; }
+.kat-spent { font-size: 11px; color: var(--muted); }
+.kat-bar-wrap { width: 80px; flex-shrink: 0; }
+.kat-bar { height: 6px; background: var(--off); border-radius: 3px; overflow: hidden; }
+.kat-bar-fill { height: 100%; border-radius: 3px; background: var(--teal); transition: width 0.5s; }
+.kat-bar-fill.over { background: var(--danger); }
+.kat-amount { font-size: 13px; font-weight: 700; font-family: 'DM Mono', monospace; text-align: right; min-width: 80px; }
+
+/* ── RIWAYAT ── */
+.riwayat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.riwayat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.btn-clear {
+  font-size: 12px; color: var(--danger); background: none; border: none;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600;
+  padding: 4px 8px; border-radius: 6px; transition: background 0.15s;
+}
+.btn-clear:hover { background: #fff0f0; }
+
+.txn-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px; border-radius: 10px;
+  margin-bottom: 6px; transition: background 0.15s;
+  cursor: default;
+}
+.txn-item:hover { background: var(--off); }
+.txn-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.txn-dot.abia { background: var(--abia); }
+.txn-dot.putri { background: var(--putri); }
+.txn-info { flex: 1; min-width: 0; }
+.txn-kat { font-size: 13px; font-weight: 600; }
+.txn-meta { font-size: 11px; color: var(--muted); }
+.txn-amount { font-size: 14px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--danger); }
+.txn-delete { background: none; border: none; cursor: pointer; color: var(--border); font-size: 16px; padding: 2px 6px; border-radius: 4px; transition: color 0.15s; }
+.txn-delete:hover { color: var(--danger); }
+.empty-state { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
+.empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+/* chart */
+.chart-wrap { position: relative; height: 180px; margin-bottom: 8px; }
+canvas { width: 100% !important; }
+
+/* toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--navy); color: white; padding: 12px 24px;
+  border-radius: 30px; font-size: 13px; font-weight: 600;
+  box-shadow: var(--shadow-lg); z-index: 999;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* responsive */
+@media (max-width: 600px) {
+  .saldo-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .budget-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: 1; }
+  .saldo-amount { font-size: 28px; }
+  .container { padding: 16px 14px 60px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">💰 Kas<span>Keluarga</span></div>
+  <div class="topbar-month" id="topbarMonth">—</div>
+</div>
+
+<div class="container">
+
+  <!-- HERO SALDO -->
+  <div class="saldo-card">
+    <div class="saldo-label">Saldo Tersisa Bulan Ini</div>
+    <div class="saldo-amount ok" id="heroSaldo">Rp 0</div>
+    <div class="saldo-sub" id="heroSub">dari total pendapatan Rp 8.100.000</div>
+    <div class="saldo-grid">
+      <div class="saldo-item">
+        <div class="saldo-item-label">Tgl 1 · Abia</div>
+        <div class="saldo-item-val abia" id="sisaAbia">Rp 0</div>
+        <div class="saldo-item-bar"><div class="saldo-item-bar-fill abia" id="barAbia" style="width:100%"></div></div>
+      </div>
+      <div class="saldo-item">
+        <div class="saldo-item-label">Tgl 15 · Putri</div>
+        <div class="saldo-item-val putri" id="sisaPutri">Rp 0</div>
+        <div class="saldo-item-bar"><div class="saldo-item-bar-fill putri" id="barPutri" style="width:100%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUDGET PROGRESS -->
+  <div class="budget-grid">
+    <div class="budget-card abia">
+      <div class="bc-header">
+        <div class="bc-title">Pengeluaran Abia</div>
+        <div class="bc-badge abia">Tgl 1</div>
+      </div>
+      <div class="bc-spent" id="spentAbia">Rp 0</div>
+      <div class="bc-budget">dari <span id="budgetAbiaLabel">Rp 5.000.000</span></div>
+      <div class="bc-bar"><div class="bc-bar-fill abia" id="progAbia" style="width:0%"></div></div>
+      <div class="bc-footer">
+        <span style="color:var(--muted);font-size:12px" id="pctAbia">0% terpakai</span>
+        <span class="bc-sisa ok" id="sisaAbiaFmt">Sisa Rp 0</span>
+      </div>
+    </div>
+    <div class="budget-card putri">
+      <div class="bc-header">
+        <div class="bc-title">Pengeluaran Putri</div>
+        <div class="bc-badge putri">Tgl 15</div>
+      </div>
+      <div class="bc-spent" id="spentPutri">Rp 0</div>
+      <div class="bc-budget">dari <span id="budgetPutriLabel">Rp 3.100.000</span></div>
+      <div class="bc-bar"><div class="bc-bar-fill putri" id="progPutri" style="width:0%"></div></div>
+      <div class="bc-footer">
+        <span style="color:var(--muted);font-size:12px" id="pctPutri">0% terpakai</span>
+        <span class="bc-sisa ok" id="sisaPutriFmt">Sisa Rp 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT FORM -->
+  <div class="input-card">
+    <div class="section-title"><span class="icon">✏️</span> Catat Pengeluaran</div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <div class="form-label">Dicatat oleh</div>
+        <div class="who-group">
+          <button class="who-btn active-abia" id="whoAbia" onclick="setWho('abia')">
+            Abia <small>Tgl 1</small>
+          </button>
+          <button class="who-btn" id="whoPutri" onclick="setWho('putri')">
+            Putri <small>Tgl 15</small>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kategori</label>
+        <select class="form-select" id="inputKat">
+          <option value="">-- Pilih kategori --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jumlah (Rp)</label>
+        <input type="number" class="form-input amount" id="inputAmount" placeholder="0" min="0">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Keterangan (opsional)</label>
+        <input type="text" class="form-input" id="inputNote" placeholder="Misal: beli di Indomaret">
+      </div>
+      <div class="form-group full">
+        <button class="btn-submit" onclick="addTransaction()">+ Tambah Pengeluaran</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAKDOWN -->
+  <div class="breakdown-card">
+    <div class="section-title"><span class="icon">📊</span> Pengeluaran per Kategori</div>
+    <div class="tab-group">
+      <button class="tab-btn active" onclick="setTab('semua',this)">Semua</button>
+      <button class="tab-btn" onclick="setTab('abia',this)">Abia</button>
+      <button class="tab-btn" onclick="setTab('putri',this)">Putri</button>
+    </div>
+    <div id="katList"></div>
+  </div>
+
+  <!-- RIWAYAT -->
+  <div class="riwayat-card">
+    <div class="riwayat-header">
+      <div class="section-title" style="margin:0"><span class="icon">🕐</span> Riwayat Transaksi</div>
+      <button class="btn-clear" onclick="clearAll()">Hapus Semua</button>
+    </div>
+    <div id="txnList"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG BUDGET ──
+const BUDGET = {
+  abia: {
+    gaji: 5000000,
+    kategori: {
+      'Kontrakan': {budget:1250000, icon:'🏠'},
+      'Listrik': {budget:200000, icon:'💡'},
+      'Galon': {budget:80000, icon:'💧'},
+      'Gas': {budget:75000, icon:'🔥'},
+      'Beras': {budget:105000, icon:'🌾'},
+      'Minyak Goreng': {budget:40000, icon:'🫙'},
+      'Telur': {budget:120000, icon:'🥚'},
+      'Kecap': {budget:20000, icon:'🍶'},
+      'Tissue': {budget:100000, icon:'🧻'},
+      'Sabun Mandi': {budget:20000, icon:'🧼'},
+      'Sampo': {budget:35000, icon:'🧴'},
+      'Pasta Gigi': {budget:15000, icon:'🪥'},
+      'Buah': {budget:50000, icon:'🍎'},
+      'Sayur': {budget:200000, icon:'🥬'},
+      'Daging': {budget:50000, icon:'🥩'},
+      'Snack Bayi': {budget:50000, icon:'🍪'},
+      'Popok': {budget:150000, icon:'👶'},
+      'Lactacyd': {budget:100000, icon:'🧴'},
+      'Transpulmin': {budget:70000, icon:'💊'},
+      'Jajan': {budget:1000000, icon:'🍜'},
+      'BPJS': {budget:200000, icon:'🏥'},
+      'Bensin': {budget:400000, icon:'⛽'},
+      'Wifi': {budget:350000, icon:'📶'},
+    }
+  },
+  putri: {
+    gaji: 3100000,
+    kategori: {
+      'Daycare': {budget:1363333, icon:'🏫'},
+      'Nabung': {budget:1000000, icon:'🏦'},
+      'Nutrilan': {budget:396000, icon:'🍼'},
+      'Pasir': {budget:60000, icon:'🐱'},
+      'Listrik Datar': {budget:50000, icon:'💡'},
+      'Buah untuk Bayi': {budget:50000, icon:'🍌'},
+      'Dry Food': {budget:120000, icon:'🐾'},
+    }
+  }
+};
+
+// ── STATE ──
+let currentWho = 'abia';
+let currentTab = 'semua';
+
+function getStorageKey() {
+  const now = new Date();
+  return `kaskel_${now.getFullYear()}_${now.getMonth()+1}`;
+}
+
+function loadData() {
+  const key = getStorageKey();
+  const raw = localStorage.getItem(key);
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveData(data) {
+  localStorage.setItem(getStorageKey(), JSON.stringify(data));
+}
+
+// ── WHO SELECT ──
+function setWho(who) {
+  currentWho = who;
+  document.getElementById('whoAbia').className = 'who-btn' + (who==='abia' ? ' active-abia' : '');
+  document.getElementById('whoPutri').className = 'who-btn' + (who==='putri' ? ' active-putri' : '');
+  populateKategori();
+}
+
+function populateKategori() {
+  const sel = document.getElementById('inputKat');
+  const cats = Object.keys(BUDGET[currentWho].kategori);
+  sel.innerHTML = '<option value="">-- Pilih kategori --</option>' +
+    cats.map(c => `<option value="${c}">${BUDGET[currentWho].kategori[c].icon} ${c}</option>`).join('');
+}
+
+// ── ADD TRANSACTION ──
+function addTransaction() {
+  const kat = document.getElementById('inputKat').value;
+  const amount = parseInt(document.getElementById('inputAmount').value) || 0;
+  const note = document.getElementById('inputNote').value.trim();
+
+  if (!kat) { showToast('⚠️ Pilih kategori dulu'); return; }
+  if (!amount || amount <= 0) { showToast('⚠️ Masukkan jumlah yang valid'); return; }
+
+  const data = loadData();
+  data.unshift({
+    id: Date.now(),
+    who: currentWho,
+    kat, amount, note,
+    time: new Date().toISOString()
+  });
+  saveData(data);
+
+  document.getElementById('inputAmount').value = '';
+  document.getElementById('inputNote').value = '';
+  document.getElementById('inputKat').value = '';
+
+  showToast(`✅ +${fmt(amount)} dicatat`);
+  render();
+}
+
+// ── DELETE ──
+function deleteTransaction(id) {
+  const data = loadData().filter(t => t.id !== id);
+  saveData(data);
+  render();
+}
+
+function clearAll() {
+  if (!confirm('Hapus semua transaksi bulan ini?')) return;
+  localStorage.removeItem(getStorageKey());
+  render();
+  showToast('🗑️ Semua transaksi dihapus');
+}
+
+// ── COMPUTE ──
+function compute() {
+  const data = loadData();
+  const spent = { abia: {}, putri: {} };
+  const totals = { abia: 0, putri: 0 };
+
+  data.forEach(t => {
+    spent[t.who][t.kat] = (spent[t.who][t.kat] || 0) + t.amount;
+    totals[t.who] += t.amount;
+  });
+
+  return { data, spent, totals };
+}
+
+// ── RENDER ──
+function render() {
+  const { data, spent, totals } = compute();
+  const budgetA = BUDGET.abia.gaji;
+  const budgetP = BUDGET.putri.gaji;
+
+  const sisaA = budgetA - totals.abia;
+  const sisaP = budgetP - totals.putri;
+  const sisaTotal = sisaA + sisaP;
+
+  // Hero
+  const heroEl = document.getElementById('heroSaldo');
+  heroEl.textContent = formatRp(sisaTotal);
+  heroEl.className = 'saldo-amount ' + (sisaTotal > 500000 ? 'ok' : sisaTotal > 0 ? 'warn' : 'danger');
+  document.getElementById('heroSub').textContent = `sudah terpakai ${formatRp(totals.abia + totals.putri)} dari total pendapatan ${formatRp(budgetA + budgetP)}`;
+
+  document.getElementById('sisaAbia').textContent = formatRp(sisaA);
+  document.getElementById('sisaPutri').textContent = formatRp(sisaP);
+  document.getElementById('barAbia').style.width = Math.max(0, Math.min(100, (sisaA/budgetA)*100)) + '%';
+  document.getElementById('barPutri').style.width = Math.max(0, Math.min(100, (sisaP/budgetP)*100)) + '%';
+
+  // Budget cards
+  const pctA = Math.min(100, (totals.abia / budgetA) * 100);
+  const pctP = Math.min(100, (totals.putri / budgetP) * 100);
+
+  document.getElementById('spentAbia').textContent = formatRp(totals.abia);
+  document.getElementById('progAbia').style.width = pctA + '%';
+  document.getElementById('progAbia').className = 'bc-bar-fill' + (pctA >= 90 ? ' over' : ' abia');
+  document.getElementById('pctAbia').textContent = pctA.toFixed(0) + '% terpakai';
+  const sAFmt = document.getElementById('sisaAbiaFmt');
+  sAFmt.textContent = (sisaA >= 0 ? 'Sisa ' : 'Lebih ') + formatRp(Math.abs(sisaA));
+  sAFmt.className = 'bc-sisa' + (sisaA > 200000 ? ' ok' : sisaA > 0 ? ' warn' : ' danger');
+
+  document.getElementById('spentPutri').textContent = formatRp(totals.putri);
+  document.getElementById('progPutri').style.width = pctP + '%';
+  document.getElementById('progPutri').className = 'bc-bar-fill' + (pctP >= 90 ? ' over' : ' putri');
+  document.getElementById('pctPutri').textContent = pctP.toFixed(0) + '% terpakai';
+  const sPFmt = document.getElementById('sisaPutriFmt');
+  sPFmt.textContent = (sisaP >= 0 ? 'Sisa ' : 'Lebih ') + formatRp(Math.abs(sisaP));
+  sPFmt.className = 'bc-sisa' + (sisaP > 200000 ? ' ok' : sisaP > 0 ? ' warn' : ' danger');
+
+  // Kategori breakdown
+  renderKategori(spent);
+
+  // Transaksi
+  renderTxn(data);
+}
+
+function renderKategori(spent) {
+  const el = document.getElementById('katList');
+  let items = [];
+
+  ['abia', 'putri'].forEach(who => {
+    if (currentTab !== 'semua' && currentTab !== who) return;
+    Object.entries(BUDGET[who].kategori).forEach(([name, cfg]) => {
+      const s = spent[who][name] || 0;
+      items.push({ who, name, icon: cfg.icon, budget: cfg.budget, spent: s });
+    });
+  });
+
+  items = items.filter(i => currentTab === 'semua' ? true : i.who === currentTab);
+
+  if (items.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div>Belum ada data</div>';
+    return;
+  }
+
+  el.innerHTML = items.map(i => {
+    const pct = Math.min(100, i.budget > 0 ? (i.spent / i.budget) * 100 : 0);
+    const over = pct >= 100;
+    const color = i.who === 'abia' ? '#EAF4FB' : '#FEF9E7';
+    const accentBg = i.who === 'abia' ? '#dbeeff' : '#fef3c7';
+    return `<div class="kat-item">
+      <div class="kat-icon" style="background:${accentBg}">${i.icon}</div>
+      <div class="kat-info">
+        <div class="kat-name">${i.name}</div>
+        <div class="kat-spent">${formatRp(i.spent)} / ${formatRp(i.budget)}</div>
+      </div>
+      <div class="kat-bar-wrap">
+        <div class="kat-bar"><div class="kat-bar-fill${over?' over':''}" style="width:${pct}%"></div></div>
+      </div>
+      <div class="kat-amount" style="color:${over?'var(--danger)':'var(--text)'}">${formatRp(i.spent)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTxn(data) {
+  const el = document.getElementById('txnList');
+  if (!data.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div>Belum ada transaksi bulan ini</div>';
+    return;
+  }
+
+  el.innerHTML = data.map(t => {
+    const d = new Date(t.time);
+    const dateStr = d.toLocaleDateString('id-ID', {day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    const icon = (BUDGET[t.who].kategori[t.kat] || {icon:'💸'}).icon;
+    return `<div class="txn-item">
+      <div class="txn-dot ${t.who}"></div>
+      <div class="txn-info">
+        <div class="txn-kat">${icon} ${t.kat}</div>
+        <div class="txn-meta">${t.who === 'abia' ? 'Abia' : 'Putri'} · ${dateStr}${t.note ? ' · ' + t.note : ''}</div>
+      </div>
+      <div class="txn-amount">-${formatRp(t.amount)}</div>
+      <button class="txn-delete" onclick="deleteTransaction(${t.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── TAB ──
+function setTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const { spent } = compute();
+  renderKategori(spent);
+}
+
+// ── UTILS ──
+function formatRp(n) {
+  return 'Rp ' + Math.abs(n).toLocaleString('id-ID');
+}
+function fmt(n) { return n.toLocaleString('id-ID'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function setMonthLabel() {
+  const now = new Date();
+  const label = now.toLocaleDateString('id-ID', {month:'long', year:'numeric'});
+  document.getElementById('topbarMonth').textContent = label;
+}
+
+// ── INIT ──
+populateKategori();
+setMonthLabel();
+render();
+</script>
+</body>
+</html>
