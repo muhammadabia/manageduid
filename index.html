@@ -348,16 +348,19 @@ function getMonthKey() {
 // ── SCRIPT URL SETUP ──
 function checkSetup() {
   const isValid = scriptUrl && scriptUrl.startsWith('https://script.google.com');
+  // Always load local data first for instant render
+  const local = localStorage.getItem('kaskel_local_' + getMonthKey());
+  allData = local ? JSON.parse(local) : [];
+  renderAll();
+
   if (!isValid) {
     scriptUrl = '';
     localStorage.removeItem(SCRIPT_URL_KEY);
     document.getElementById('setupBanner').style.display = 'block';
     setSyncStatus('err','⚠️ Belum terhubung');
-    // still render with empty data
-    renderAll();
   } else {
     document.getElementById('setupBanner').style.display = 'none';
-    fetchData();
+    fetchData(); // then sync from Sheets
   }
 }
 
@@ -380,28 +383,40 @@ function setSyncStatus(state, text) {
 }
 
 // ── FETCH DATA ──
-async function fetchData() {
+function fetchData() {
   if (!scriptUrl) return;
   setSyncStatus('loading','⏳ Memuat...');
-  try {
-    const url = `${scriptUrl}?action=get&month=${getMonthKey()}`;
-    const res = await fetch(url);
-    const json = await res.json();
+
+  // JSONP — satu-satunya cara bypass CORS ke Apps Script
+  const cbName = 'kaskelCb_' + Date.now();
+  const script = document.createElement('script');
+
+  window[cbName] = function(json) {
+    delete window[cbName];
+    script.remove();
+    clearTimeout(timer);
     if (json.status === 'ok') {
       allData = json.data || [];
-      setSyncStatus('ok',`✓ Sinkron`);
+      setSyncStatus('ok', '✓ Sinkron');
       renderAll();
     } else {
-      throw new Error(json.message);
+      setSyncStatus('err', '✕ Gagal sync');
+      showToast('❌ Response error dari Sheets');
     }
-  } catch(e) {
-    setSyncStatus('err','✕ Gagal sync');
+  };
+
+  const timer = setTimeout(() => {
+    delete window[cbName];
+    script.remove();
+    setSyncStatus('err', '✕ Timeout');
     showToast('❌ Gagal terhubung ke Sheets');
-    // fallback to local
     const local = localStorage.getItem('kaskel_local_' + getMonthKey());
     allData = local ? JSON.parse(local) : [];
     renderAll();
-  }
+  }, 10000);
+
+  script.src = `${scriptUrl}?action=get&month=${getMonthKey()}&callback=${cbName}`;
+  document.head.appendChild(script);
 }
 
 // ── ADD TRANSACTION ──
@@ -432,26 +447,29 @@ async function addTransaction() {
   btn.textContent = 'Menyimpan...';
 
   try {
+    // Simpan lokal dulu selalu
+    const key = 'kaskel_local_' + getMonthKey();
+    const local = localStorage.getItem(key);
+    const arr = local ? JSON.parse(local) : [];
+    arr.unshift(txn);
+    localStorage.setItem(key, JSON.stringify(arr));
+
     if (scriptUrl) {
-      const res = await fetch(scriptUrl, {
+      // no-cors POST ke Apps Script (fire and forget)
+      fetch(scriptUrl, {
         method: 'POST',
+        mode: 'no-cors',
         body: JSON.stringify({action:'add', data: txn})
+      }).then(() => {
+        setSyncStatus('ok','✓ Tersimpan');
+      }).catch(() => {
+        setSyncStatus('err','✕ Gagal sync');
       });
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error();
-      setSyncStatus('ok','✓ Tersimpan');
-    } else {
-      // local fallback
-      const key = 'kaskel_local_' + getMonthKey();
-      const local = localStorage.getItem(key);
-      const arr = local ? JSON.parse(local) : [];
-      arr.unshift(txn);
-      localStorage.setItem(key, JSON.stringify(arr));
     }
     showToast(`✅ +${fmt(amount)} dicatat`);
   } catch(e) {
-    showToast('⚠️ Tersimpan lokal (sync gagal)');
-    setSyncStatus('err','✕ Gagal sync');
+    showToast('⚠️ Gagal menyimpan');
+    setSyncStatus('err','✕ Error');
   } finally {
     btn.disabled = false;
     btn.textContent = '+ Tambah Pengeluaran';
@@ -462,28 +480,33 @@ async function addTransaction() {
 async function deleteTransaction(id) {
   allData = allData.filter(t => t.id !== id);
   renderAll();
+  // Update lokal
+  const key = 'kaskel_local_' + getMonthKey();
+  const local = localStorage.getItem(key);
+  const arr = local ? JSON.parse(local) : [];
+  const filtered = arr.filter(t => t.id !== id);
+  localStorage.setItem(key, JSON.stringify(filtered));
+
   if (!scriptUrl) return;
-  try {
-    await fetch(scriptUrl, {
-      method: 'POST',
-      body: JSON.stringify({action:'delete', id, month: getMonthKey()})
-    });
-  } catch(e) {}
+  fetch(scriptUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({action:'delete', id, month: getMonthKey()})
+  }).catch(() => {});
 }
 
 async function clearAll() {
   if (!confirm('Hapus semua transaksi bulan ini?')) return;
   allData = [];
   renderAll();
-  if (scriptUrl) {
-    try {
-      await fetch(scriptUrl, {
-        method:'POST',
-        body: JSON.stringify({action:'clearMonth', month: getMonthKey()})
-      });
-    } catch(e){}
-  }
   localStorage.removeItem('kaskel_local_' + getMonthKey());
+  if (scriptUrl) {
+    fetch(scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({action:'clearMonth', month: getMonthKey()})
+    }).catch(() => {});
+  }
   showToast('🗑️ Semua transaksi dihapus');
 }
 
