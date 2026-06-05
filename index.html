@@ -397,6 +397,8 @@ function fetchData() {
     clearTimeout(timer);
     if (json.status === 'ok') {
       allData = json.data || [];
+      // Cache ke lokal supaya refresh tetap ada data
+      localStorage.setItem('kaskel_local_' + getMonthKey(), JSON.stringify(allData));
       setSyncStatus('ok', '✓ Sinkron');
       renderAll();
     } else {
