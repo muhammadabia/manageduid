@@ -726,33 +726,58 @@ Gunakan bahasa Indonesia yang hangat dan personal. Sebut nama Abia dan Putri. Gu
   // Build tabel ringkasan dulu
   const tabelHtml = buildTabelHtml(katData, totals, sisaA, sisaP, periode);
 
+  // Tampilkan tabel dulu, narasi loading
+  document.getElementById('modalBody').innerHTML = tabelHtml + `
+    <div class="ai-narasi">
+      <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
+      <div class="laporan-loading" style="text-align:left;padding:16px 0;">
+        <div class="spinner" style="margin:0 0 8px 0;width:24px;height:24px;border-width:2px;"></div>
+        <span style="font-size:13px;color:var(--muted)">Sedang menganalisis data keuangan...</span>
+      </div>
+    </div>`;
+
+  if (!scriptUrl) {
+    document.querySelector('.ai-narasi').innerHTML = `
+      <div class="ai-narasi-header">⚠️ Belum terhubung ke Sheets</div>
+      <div class="ai-narasi-text" style="color:var(--muted)">Hubungkan ke Google Sheets terlebih dahulu.</div>`;
+    return;
+  }
+
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{role:'user', content: prompt}]
-      })
-    });
-
-    const data = await response.json();
-    const aiText = data.content?.[0]?.text || 'Gagal generate narasi.';
-    laporanAiText = aiText;
-
-    document.getElementById('modalBody').innerHTML = tabelHtml + `
-      <div class="ai-narasi">
-        <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
-        <div class="ai-narasi-text">${aiText}</div>
-      </div>`;
+    // Panggil AI lewat Apps Script sebagai proxy (JSONP)
+    const cbName = 'aiCb_' + Date.now();
+    const script = document.createElement('script');
+    window[cbName] = function(json) {
+      delete window[cbName]; script.remove(); clearTimeout(timer);
+      const narasi = document.querySelector('.ai-narasi');
+      if (json && json.status === 'ok') {
+        laporanAiText = json.text;
+        narasi.innerHTML = `
+          <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
+          <div class="ai-narasi-text">${json.text.replace(/
+/g,'<br>')}</div>`;
+      } else {
+        narasi.innerHTML = `
+          <div class="ai-narasi-header">⚠️ Gagal generate narasi</div>
+          <div class="ai-narasi-text" style="color:var(--muted)">${(json&&json.message)||'Terjadi kesalahan.'}</div>`;
+      }
+    };
+    const timer = setTimeout(() => {
+      delete window[cbName]; script.remove();
+      const narasi = document.querySelector('.ai-narasi');
+      if (narasi) narasi.innerHTML = `
+        <div class="ai-narasi-header">⚠️ Timeout</div>
+        <div class="ai-narasi-text" style="color:var(--muted)">AI butuh waktu lebih lama. Coba generate ulang.</div>`;
+    }, 30000);
+    // Kirim prompt via GET parameter (JSONP)
+    const encodedPrompt = encodeURIComponent(prompt);
+    script.src = `${scriptUrl}?action=ai&prompt=${encodedPrompt}&callback=${cbName}`;
+    document.head.appendChild(script);
 
   } catch(e) {
-    document.getElementById('modalBody').innerHTML = tabelHtml + `
-      <div class="ai-narasi">
-        <div class="ai-narasi-header">⚠️ Narasi AI tidak tersedia</div>
-        <div class="ai-narasi-text" style="color:var(--muted)">Tidak dapat terhubung ke AI. Laporan tabel tetap tersedia untuk dicetak.</div>
-      </div>`;
+    document.querySelector('.ai-narasi').innerHTML = `
+      <div class="ai-narasi-header">⚠️ Narasi AI tidak tersedia</div>
+      <div class="ai-narasi-text" style="color:var(--muted)">Tidak dapat terhubung. Laporan tabel tetap tersedia.</div>`;
   }
 }
 
