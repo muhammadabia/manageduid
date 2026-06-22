@@ -8,10 +8,10 @@
 <style>
 :root {
   --navy:#0A1628;--navy2:#0f1f3d;--teal:#0E6E8C;--teal2:#1a9bbf;
-  --mint:#2CD4D9;--white:#ffffff;--off:#f4f6f9;--text:#1a2540;--muted:#7a8aaa;
+  --mint:#2CD4D9;--white:#fff;--off:#f4f6f9;--text:#1a2540;--muted:#7a8aaa;
   --danger:#e84545;--success:#22c55e;--warning:#f59e0b;
   --abia:#2E86C1;--abia-bg:#EAF4FB;--putri:#D4AC0D;--putri-bg:#FEF9E7;
-  --card:#ffffff;--border:#e2e8f0;
+  --card:#fff;--border:#e2e8f0;
   --shadow:0 2px 16px rgba(10,22,40,0.08);--shadow-lg:0 8px 40px rgba(10,22,40,0.14);
   --radius:14px;--radius-sm:8px;
 }
@@ -86,7 +86,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
 .form-group{display:flex;flex-direction:column;gap:6px;}
 .form-group.full{grid-column:1/-1;}
 .form-label{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);}
-.form-input,.form-select{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--off);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.form-input,.form-select{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--off);outline:none;transition:border-color 0.2s;}
 .form-input:focus,.form-select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,110,140,0.1);background:white;}
 .form-input.amount{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;}
 .who-group{display:flex;gap:8px;}
@@ -97,7 +97,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
 .btn-submit{width:100%;padding:13px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;margin-top:4px;transition:opacity 0.2s;}
 .btn-submit:hover{opacity:0.9;}
 .btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
-/* field lainnya */
 .lainnya-field{display:none;margin-top:8px;}
 .lainnya-field.show{display:block;}
 
@@ -117,12 +116,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
 .kat-bar-fill.over{background:var(--danger);}
 .kat-amount{font-size:13px;font-weight:700;font-family:'DM Mono',monospace;text-align:right;min-width:80px;}
 
-.riwayat-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.riwayat-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:20px;}
 .riwayat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
 .riwayat-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .btn-action{font-size:12px;background:none;border:1.5px solid var(--border);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;padding:5px 12px;border-radius:20px;transition:all 0.15s;}
 .btn-action.refresh{color:var(--teal);}
-.btn-action.refresh:hover{background:var(--abia-bg);border-color:var(--abia);}
+.btn-action.refresh:hover{background:var(--abia-bg);}
 .btn-action.report{color:#7c3aed;border-color:#ddd6fe;}
 .btn-action.report:hover{background:#f5f3ff;border-color:#7c3aed;}
 .btn-clear{font-size:12px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;padding:4px 8px;border-radius:6px;}
@@ -141,28 +140,78 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
 .empty-state{text-align:center;padding:32px;color:var(--muted);font-size:14px;}
 .empty-icon{font-size:36px;margin-bottom:8px;}
 
+/* ── LAPORAN AI MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.modal-overlay.hidden{display:none;}
+.modal{background:white;border-radius:20px;width:100%;max-width:720px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal-header{padding:24px 28px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:white;z-index:1;}
+.modal-title{font-size:17px;font-weight:800;}
+.modal-actions{display:flex;gap:8px;}
+.btn-modal{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--off);font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s;}
+.btn-modal.primary{background:var(--navy);color:white;border-color:var(--navy);}
+.btn-modal.primary:hover{opacity:0.85;}
+.btn-modal.close-btn{color:var(--muted);}
+.modal-body{padding:24px 28px;}
+
+/* Laporan content */
+.laporan-loading{text-align:center;padding:40px;color:var(--muted);}
+.laporan-loading .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.laporan-content{font-size:14px;line-height:1.7;color:var(--text);}
+
+/* Ringkasan tabel */
+.lap-section{margin-bottom:24px;}
+.lap-section-title{font-size:13px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--off);}
+.lap-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.lap-stat{background:var(--off);border-radius:10px;padding:14px;text-align:center;}
+.lap-stat-val{font-size:18px;font-weight:800;font-family:'DM Mono',monospace;}
+.lap-stat-val.ok{color:var(--success);}
+.lap-stat-val.warn{color:var(--warning);}
+.lap-stat-val.danger{color:var(--danger);}
+.lap-stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;}
+
+/* Tabel kategori */
+.lap-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px;}
+.lap-table th{background:var(--navy);color:white;padding:8px 12px;text-align:left;font-size:11px;letter-spacing:0.5px;}
+.lap-table th:not(:first-child){text-align:right;}
+.lap-table td{padding:8px 12px;border-bottom:1px solid var(--border);}
+.lap-table td:not(:first-child){text-align:right;font-family:'DM Mono',monospace;font-size:12px;}
+.lap-table tr:last-child td{border-bottom:none;}
+.lap-table tr.over td{background:#fff8f8;}
+.lap-table tr.hemat td{background:#f0fff4;}
+.lap-table .status-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
+.lap-table .status-badge.over{background:#fee2e2;color:#dc2626;}
+.lap-table .status-badge.hemat{background:#dcfce7;color:#16a34a;}
+.lap-table .status-badge.ok{background:#e0f2fe;color:#0369a1;}
+.lap-total td{font-weight:800;background:var(--off)!important;border-top:2px solid var(--border)!important;}
+
+/* Narasi AI */
+.ai-narasi{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;border-radius:12px;padding:20px 24px;margin-top:4px;}
+.ai-narasi-header{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#0369a1;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;}
+.ai-narasi-text{font-size:14px;line-height:1.8;color:var(--text);white-space:pre-wrap;}
+.ai-streaming{opacity:0.7;}
+
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--navy);color:white;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);z-index:999;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
-/* ── PRINT / PDF STYLES ── */
+/* ── PRINT ── */
 @media print {
-  body{background:white;font-size:11pt;}
+  body{background:white;}
   .topbar,.input-card,.breakdown-card,.riwayat-actions,.txn-delete,
-  .setup-banner,.btn-clear,.tab-group,.toast{display:none!important;}
+  .setup-banner,.btn-clear,.tab-group,.toast,.modal-overlay{display:none!important;}
   .container{padding:0;max-width:100%;}
   .saldo-card{background:#0A1628!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-radius:8px;margin-bottom:16px;padding:20px 24px;}
   .budget-grid{grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
   .budget-card{box-shadow:none;border:1px solid #e2e8f0;padding:14px;}
-  .riwayat-card{box-shadow:none;border:1px solid #e2e8f0;}
+  .riwayat-card{box-shadow:none;border:1px solid #e2e8f0;margin-bottom:16px;}
   .txn-item{padding:7px 8px;margin-bottom:2px;}
-  .txn-item:hover{background:none;}
-  .kat-item{padding:7px 0;}
-  .breakdown-card{display:block!important;box-shadow:none;border:1px solid #e2e8f0;margin-bottom:16px;}
-  .page-break{page-break-before:always;}
   .print-header{display:block!important;}
+  .print-laporan{display:block!important;}
+  .print-laporan .ai-narasi{background:#f0f9ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   h2.print-section{font-size:13pt;font-weight:800;color:#0A1628;margin:16px 0 10px;border-bottom:2px solid #0A1628;padding-bottom:4px;}
 }
 .print-header{display:none;}
+.print-laporan{display:none;}
 
 @media(max-width:600px){
   .budget-grid{grid-template-columns:1fr;}
@@ -171,6 +220,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
   .saldo-amount{font-size:28px;}
   .container{padding:16px 14px 60px;}
   .setup-input-row{flex-direction:column;}
+  .lap-stat-grid{grid-template-columns:1fr 1fr;}
+  .modal{border-radius:14px;}
+  .modal-body{padding:16px 18px;}
 }
 </style>
 </head>
@@ -195,7 +247,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
     </div>
   </div>
 
-  <!-- PRINT HEADER (hanya muncul saat print) -->
+  <!-- PRINT HEADER -->
   <div class="print-header">
     <h2 style="font-size:18pt;font-weight:800;color:#0A1628;margin-bottom:4px;">Laporan Budget Keluarga</h2>
     <p id="printPeriode" style="font-size:11pt;color:#7a8aaa;margin-bottom:20px;"></p>
@@ -221,10 +273,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
 
   <div class="budget-grid">
     <div class="budget-card abia">
-      <div class="bc-header">
-        <div class="bc-title">Pengeluaran Abia</div>
-        <div class="bc-badge abia">Tgl 1</div>
-      </div>
+      <div class="bc-header"><div class="bc-title">Pengeluaran Abia</div><div class="bc-badge abia">Tgl 1</div></div>
       <div class="bc-spent" id="spentAbia">Rp 0</div>
       <div class="bc-budget">dari Rp 5.000.000</div>
       <div class="bc-bar"><div class="bc-bar-fill abia" id="progAbia" style="width:0%"></div></div>
@@ -234,10 +283,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
       </div>
     </div>
     <div class="budget-card putri">
-      <div class="bc-header">
-        <div class="bc-title">Pengeluaran Putri</div>
-        <div class="bc-badge putri">Tgl 15</div>
-      </div>
+      <div class="bc-header"><div class="bc-title">Pengeluaran Putri</div><div class="bc-badge putri">Tgl 15</div></div>
       <div class="bc-spent" id="spentPutri">Rp 0</div>
       <div class="bc-budget">dari Rp 3.100.000</div>
       <div class="bc-bar"><div class="bc-bar-fill putri" id="progPutri" style="width:0%"></div></div>
@@ -267,7 +313,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
         <label class="form-label">Jumlah (Rp)</label>
         <input type="number" class="form-input amount" id="inputAmount" placeholder="0" min="0">
       </div>
-      <!-- Field nama lainnya -->
       <div class="form-group full lainnya-field" id="lainnyaField">
         <label class="form-label">Nama Pengeluaran</label>
         <input type="text" class="form-input" id="inputLainnya" placeholder="Misal: servis motor, beli obat...">
@@ -299,61 +344,82 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(
       <div class="section-title" style="margin:0"><span>🕐</span> Riwayat Transaksi</div>
       <div class="riwayat-actions">
         <button class="btn-action refresh" onclick="fetchData()">🔄 Refresh</button>
-        <button class="btn-action report" onclick="cetakLaporan()">📄 Cetak PDF</button>
+        <button class="btn-action report" onclick="bukaLaporan()">🤖 Laporan AI</button>
         <button class="btn-clear" onclick="clearAll()">Hapus Semua</button>
       </div>
     </div>
     <div id="txnList"></div>
   </div>
 
+  <!-- PRINT LAPORAN (hanya tampil saat print) -->
+  <div class="print-laporan" id="printLaporan"></div>
+
+</div>
+
+<!-- MODAL LAPORAN AI -->
+<div class="modal-overlay hidden" id="modalOverlay" onclick="tutupModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">🤖 Laporan Keuangan Bulanan</div>
+      <div class="modal-actions">
+        <button class="btn-modal primary" onclick="cetakDariModal()">🖨️ Cetak PDF</button>
+        <button class="btn-modal close-btn" onclick="tutupModalLangsung()">✕ Tutup</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="laporan-loading">
+        <div class="spinner"></div>
+        <div>Memuat laporan...</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── BUDGET CONFIG ──
-// Semua kategori digabung — siapapun bisa bayar apapun
+// ── CONFIG ──
 const KATEGORI = {
-  'Kontrakan':      {budget:1250000, icon:'🏠', default:'abia'},
-  'Listrik':        {budget:200000,  icon:'💡', default:'abia'},
-  'Galon':          {budget:80000,   icon:'💧', default:'abia'},
-  'Gas':            {budget:75000,   icon:'🔥', default:'abia'},
-  'Beras':          {budget:105000,  icon:'🌾', default:'abia'},
-  'Minyak Goreng':  {budget:40000,   icon:'🫙', default:'abia'},
-  'Telur':          {budget:120000,  icon:'🥚', default:'abia'},
-  'Kecap':          {budget:20000,   icon:'🍶', default:'abia'},
-  'Tissue':         {budget:100000,  icon:'🧻', default:'abia'},
-  'Sabun Mandi':    {budget:20000,   icon:'🧼', default:'abia'},
-  'Sampo':          {budget:35000,   icon:'🧴', default:'abia'},
-  'Pasta Gigi':     {budget:15000,   icon:'🪥', default:'abia'},
-  'Buah':           {budget:50000,   icon:'🍎', default:'abia'},
-  'Sayur':          {budget:200000,  icon:'🥬', default:'abia'},
-  'Daging':         {budget:50000,   icon:'🥩', default:'abia'},
-  'Snack Bayi':     {budget:50000,   icon:'🍪', default:'abia'},
-  'Popok':          {budget:150000,  icon:'👶', default:'abia'},
-  'Lactacyd':       {budget:100000,  icon:'🧴', default:'abia'},
-  'Transpulmin':    {budget:70000,   icon:'💊', default:'abia'},
-  'Jajan':          {budget:1000000, icon:'🍜', default:'abia'},
-  'BPJS':           {budget:200000,  icon:'🏥', default:'abia'},
-  'Bensin':         {budget:400000,  icon:'⛽', default:'abia'},
-  'Wifi':           {budget:350000,  icon:'📶', default:'abia'},
-  'Daycare':        {budget:1363333, icon:'🏫', default:'putri'},
-  'Nabung':         {budget:1000000, icon:'🏦', default:'putri'},
-  'Nutrilan':       {budget:396000,  icon:'🍼', default:'putri'},
-  'Pasir':          {budget:60000,   icon:'🐱', default:'putri'},
-  'Listrik Datar':  {budget:50000,   icon:'💡', default:'putri'},
-  'Buah untuk Bayi':{budget:50000,   icon:'🍌', default:'putri'},
-  'Dry Food':       {budget:120000,  icon:'🐾', default:'putri'},
-  'Lainnya':        {budget:0,       icon:'💸', default:'abia'},
+  'Kontrakan':      {budget:1250000,icon:'🏠'},
+  'Listrik':        {budget:200000, icon:'💡'},
+  'Galon':          {budget:80000,  icon:'💧'},
+  'Gas':            {budget:75000,  icon:'🔥'},
+  'Beras':          {budget:105000, icon:'🌾'},
+  'Minyak Goreng':  {budget:40000,  icon:'🫙'},
+  'Telur':          {budget:120000, icon:'🥚'},
+  'Kecap':          {budget:20000,  icon:'🍶'},
+  'Tissue':         {budget:100000, icon:'🧻'},
+  'Sabun Mandi':    {budget:20000,  icon:'🧼'},
+  'Sampo':          {budget:35000,  icon:'🧴'},
+  'Pasta Gigi':     {budget:15000,  icon:'🪥'},
+  'Buah':           {budget:50000,  icon:'🍎'},
+  'Sayur':          {budget:200000, icon:'🥬'},
+  'Daging':         {budget:50000,  icon:'🥩'},
+  'Snack Bayi':     {budget:50000,  icon:'🍪'},
+  'Popok':          {budget:150000, icon:'👶'},
+  'Lactacyd':       {budget:100000, icon:'🧴'},
+  'Transpulmin':    {budget:70000,  icon:'💊'},
+  'Jajan':          {budget:1000000,icon:'🍜'},
+  'BPJS':           {budget:200000, icon:'🏥'},
+  'Bensin':         {budget:400000, icon:'⛽'},
+  'Wifi':           {budget:350000, icon:'📶'},
+  'Daycare':        {budget:1363333,icon:'🏫'},
+  'Nabung':         {budget:1000000,icon:'🏦'},
+  'Nutrilan':       {budget:396000, icon:'🍼'},
+  'Pasir':          {budget:60000,  icon:'🐱'},
+  'Listrik Datar':  {budget:50000,  icon:'💡'},
+  'Buah untuk Bayi':{budget:50000,  icon:'🍌'},
+  'Dry Food':       {budget:120000, icon:'🐾'},
+  'Lainnya':        {budget:0,      icon:'💸'},
 };
-
-const GAJI = { abia: 5000000, putri: 3100000 };
+const GAJI = {abia:5000000, putri:3100000};
 const SCRIPT_URL_KEY = 'kaskel_script_url';
 
 let currentWho = 'abia';
 let currentTab = 'semua';
 let allData = [];
 let scriptUrl = localStorage.getItem(SCRIPT_URL_KEY) || '';
+let laporanAiText = '';
 
 function getMonthKey() {
   const n = new Date();
@@ -386,13 +452,13 @@ function saveScriptUrl() {
   fetchData();
 }
 
-function setSyncStatus(state, text) {
+function setSyncStatus(s, t) {
   const el = document.getElementById('syncStatus');
-  el.className = 'sync-status ' + state;
-  el.textContent = text;
+  el.className = 'sync-status ' + s;
+  el.textContent = t;
 }
 
-// ── FETCH (JSONP) ──
+// ── FETCH ──
 function fetchData() {
   if (!scriptUrl) return;
   setSyncStatus('loading','⏳ Memuat...');
@@ -405,9 +471,7 @@ function fetchData() {
       localStorage.setItem('kaskel_local_' + getMonthKey(), JSON.stringify(allData));
       setSyncStatus('ok','✓ Sinkron');
       renderAll();
-    } else {
-      setSyncStatus('err','✕ Error');
-    }
+    } else { setSyncStatus('err','✕ Error'); }
   };
   const timer = setTimeout(() => {
     delete window[cbName]; script.remove();
@@ -422,172 +486,140 @@ function fetchData() {
 function populateKategori() {
   const sel = document.getElementById('inputKat');
   sel.innerHTML = '<option value="">-- Pilih kategori --</option>' +
-    Object.entries(KATEGORI).map(([k,v]) =>
-      `<option value="${k}">${v.icon} ${k}</option>`
-    ).join('');
+    Object.entries(KATEGORI).map(([k,v]) => `<option value="${k}">${v.icon} ${k}</option>`).join('');
 }
 
 function onKatChange() {
   const val = document.getElementById('inputKat').value;
   const lf = document.getElementById('lainnyaField');
-  if (val === 'Lainnya') {
-    lf.classList.add('show');
-  } else {
-    lf.classList.remove('show');
-    document.getElementById('inputLainnya').value = '';
-  }
+  val === 'Lainnya' ? lf.classList.add('show') : lf.classList.remove('show');
+  if (val !== 'Lainnya') document.getElementById('inputLainnya').value = '';
 }
 
 function setWho(who) {
   currentWho = who;
-  document.getElementById('whoAbia').className = 'who-btn' + (who==='abia'?' active-abia':'');
-  document.getElementById('whoPutri').className = 'who-btn' + (who==='putri'?' active-putri':'');
+  document.getElementById('whoAbia').className = 'who-btn'+(who==='abia'?' active-abia':'');
+  document.getElementById('whoPutri').className = 'who-btn'+(who==='putri'?' active-putri':'');
 }
 
 // ── ADD ──
 async function addTransaction() {
   const kat = document.getElementById('inputKat').value;
-  const amount = parseInt(document.getElementById('inputAmount').value) || 0;
+  const amount = parseInt(document.getElementById('inputAmount').value)||0;
   const note = document.getElementById('inputNote').value.trim();
   const lainnya = document.getElementById('inputLainnya').value.trim();
-
   if (!kat) { showToast('⚠️ Pilih kategori dulu'); return; }
-  if (kat === 'Lainnya' && !lainnya) { showToast('⚠️ Isi nama pengeluaran'); return; }
-  if (!amount || amount <= 0) { showToast('⚠️ Masukkan jumlah yang valid'); return; }
+  if (kat==='Lainnya' && !lainnya) { showToast('⚠️ Isi nama pengeluaran'); return; }
+  if (!amount||amount<=0) { showToast('⚠️ Masukkan jumlah yang valid'); return; }
 
-  const displayKat = kat === 'Lainnya' ? `Lainnya: ${lainnya}` : kat;
+  const displayKat = kat==='Lainnya' ? `Lainnya: ${lainnya}` : kat;
+  const txn = {id:Date.now(), who:currentWho, kat:displayKat, amount, note, month:getMonthKey(), time:new Date().toISOString()};
 
-  const txn = {
-    id: Date.now(), who: currentWho,
-    kat: displayKat, amount, note,
-    month: getMonthKey(), time: new Date().toISOString()
-  };
-
-  allData.unshift(txn);
-  renderAll();
-  document.getElementById('inputAmount').value = '';
-  document.getElementById('inputNote').value = '';
-  document.getElementById('inputKat').value = '';
-  document.getElementById('inputLainnya').value = '';
+  allData.unshift(txn); renderAll();
+  document.getElementById('inputAmount').value='';
+  document.getElementById('inputNote').value='';
+  document.getElementById('inputKat').value='';
+  document.getElementById('inputLainnya').value='';
   document.getElementById('lainnyaField').classList.remove('show');
 
   const btn = document.getElementById('btnSubmit');
-  btn.disabled = true; btn.textContent = 'Menyimpan...';
+  btn.disabled=true; btn.textContent='Menyimpan...';
 
-  const key = 'kaskel_local_' + getMonthKey();
+  const key = 'kaskel_local_'+getMonthKey();
   const arr = JSON.parse(localStorage.getItem(key)||'[]');
   arr.unshift(txn);
   localStorage.setItem(key, JSON.stringify(arr));
 
   if (scriptUrl) {
-    fetch(scriptUrl, { method:'POST', mode:'no-cors', body: JSON.stringify({action:'add', data:txn}) })
-      .then(() => setSyncStatus('ok','✓ Tersimpan'))
-      .catch(() => setSyncStatus('err','✕ Gagal sync'));
+    fetch(scriptUrl,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'add',data:txn})})
+      .then(()=>setSyncStatus('ok','✓ Tersimpan'))
+      .catch(()=>setSyncStatus('err','✕ Gagal sync'));
   }
   showToast(`✅ +${fmt(amount)} dicatat`);
-  btn.disabled = false; btn.textContent = '+ Tambah Pengeluaran';
+  btn.disabled=false; btn.textContent='+ Tambah Pengeluaran';
 }
 
 // ── DELETE ──
 async function deleteTransaction(id) {
-  allData = allData.filter(t => t.id !== id);
-  renderAll();
-  const key = 'kaskel_local_' + getMonthKey();
-  const arr = JSON.parse(localStorage.getItem(key)||'[]').filter(t => t.id !== id);
-  localStorage.setItem(key, JSON.stringify(arr));
-  if (scriptUrl) fetch(scriptUrl, { method:'POST', mode:'no-cors', body: JSON.stringify({action:'delete', id, month:getMonthKey()}) }).catch(()=>{});
+  allData = allData.filter(t=>t.id!==id); renderAll();
+  const key='kaskel_local_'+getMonthKey();
+  localStorage.setItem(key, JSON.stringify(JSON.parse(localStorage.getItem(key)||'[]').filter(t=>t.id!==id)));
+  if (scriptUrl) fetch(scriptUrl,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'delete',id,month:getMonthKey()})}).catch(()=>{});
 }
 
 async function clearAll() {
   if (!confirm('Hapus semua transaksi bulan ini?')) return;
-  allData = []; renderAll();
-  localStorage.removeItem('kaskel_local_' + getMonthKey());
-  if (scriptUrl) fetch(scriptUrl, { method:'POST', mode:'no-cors', body: JSON.stringify({action:'clearMonth', month:getMonthKey()}) }).catch(()=>{});
+  allData=[]; renderAll();
+  localStorage.removeItem('kaskel_local_'+getMonthKey());
+  if (scriptUrl) fetch(scriptUrl,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'clearMonth',month:getMonthKey()})}).catch(()=>{});
   showToast('🗑️ Semua transaksi dihapus');
 }
 
 // ── COMPUTE ──
 function compute() {
-  const spent = { abia:{}, putri:{} };
-  const totals = { abia:0, putri:0 };
-  allData.forEach(t => {
-    // Normalisasi kategori "Lainnya: xxx" → group ke "Lainnya"
-    const katKey = t.kat.startsWith('Lainnya:') ? 'Lainnya' : t.kat;
-    spent[t.who][katKey] = (spent[t.who][katKey]||0) + t.amount;
-    totals[t.who] += t.amount;
+  const spent={abia:{},putri:{}}, totals={abia:0,putri:0};
+  allData.forEach(t=>{
+    const k = t.kat.startsWith('Lainnya:') ? 'Lainnya' : t.kat;
+    spent[t.who][k]=(spent[t.who][k]||0)+t.amount;
+    totals[t.who]+=t.amount;
   });
-  return {spent, totals};
+  return {spent,totals};
 }
 
 // ── RENDER ──
 function renderAll() {
-  const {spent, totals} = compute();
-  const bA = GAJI.abia, bP = GAJI.putri;
-  const sisaA = bA - totals.abia, sisaP = bP - totals.putri;
-  const sisaTotal = sisaA + sisaP;
+  const {spent,totals}=compute();
+  const bA=GAJI.abia,bP=GAJI.putri;
+  const sisaA=bA-totals.abia, sisaP=bP-totals.putri, sisaTotal=sisaA+sisaP;
 
-  const heroEl = document.getElementById('heroSaldo');
-  heroEl.textContent = formatRp(sisaTotal);
-  heroEl.className = 'saldo-amount '+(sisaTotal>500000?'ok':sisaTotal>0?'warn':'danger');
-  document.getElementById('heroSub').textContent =
-    `sudah terpakai ${formatRp(totals.abia+totals.putri)} dari total pendapatan ${formatRp(bA+bP)}`;
-  document.getElementById('sisaAbia').textContent = formatRp(sisaA);
-  document.getElementById('sisaPutri').textContent = formatRp(sisaP);
-  document.getElementById('barAbia').style.width = Math.max(0,Math.min(100,(sisaA/bA)*100))+'%';
-  document.getElementById('barPutri').style.width = Math.max(0,Math.min(100,(sisaP/bP)*100))+'%';
+  const heroEl=document.getElementById('heroSaldo');
+  heroEl.textContent=formatRp(sisaTotal);
+  heroEl.className='saldo-amount '+(sisaTotal>500000?'ok':sisaTotal>0?'warn':'danger');
+  document.getElementById('heroSub').textContent=`sudah terpakai ${formatRp(totals.abia+totals.putri)} dari total pendapatan ${formatRp(bA+bP)}`;
+  document.getElementById('sisaAbia').textContent=formatRp(sisaA);
+  document.getElementById('sisaPutri').textContent=formatRp(sisaP);
+  document.getElementById('barAbia').style.width=Math.max(0,Math.min(100,(sisaA/bA)*100))+'%';
+  document.getElementById('barPutri').style.width=Math.max(0,Math.min(100,(sisaP/bP)*100))+'%';
 
-  const pA = Math.min(100,(totals.abia/bA)*100);
-  const pP = Math.min(100,(totals.putri/bP)*100);
-  document.getElementById('spentAbia').textContent = formatRp(totals.abia);
-  document.getElementById('progAbia').style.width = pA+'%';
-  document.getElementById('progAbia').className = 'bc-bar-fill'+(pA>=90?' over':' abia');
-  document.getElementById('pctAbia').textContent = pA.toFixed(0)+'% terpakai';
-  const sAF = document.getElementById('sisaAbiaFmt');
-  sAF.textContent = (sisaA>=0?'Sisa ':'Lebih ')+formatRp(Math.abs(sisaA));
-  sAF.className = 'bc-sisa'+(sisaA>200000?' ok':sisaA>0?' warn':' danger');
+  const pA=Math.min(100,(totals.abia/bA)*100), pP=Math.min(100,(totals.putri/bP)*100);
+  document.getElementById('spentAbia').textContent=formatRp(totals.abia);
+  document.getElementById('progAbia').style.width=pA+'%';
+  document.getElementById('progAbia').className='bc-bar-fill'+(pA>=90?' over':' abia');
+  document.getElementById('pctAbia').textContent=pA.toFixed(0)+'% terpakai';
+  const sAF=document.getElementById('sisaAbiaFmt');
+  sAF.textContent=(sisaA>=0?'Sisa ':'Lebih ')+formatRp(Math.abs(sisaA));
+  sAF.className='bc-sisa'+(sisaA>200000?' ok':sisaA>0?' warn':' danger');
 
-  document.getElementById('spentPutri').textContent = formatRp(totals.putri);
-  document.getElementById('progPutri').style.width = pP+'%';
-  document.getElementById('progPutri').className = 'bc-bar-fill'+(pP>=90?' over':' putri');
-  document.getElementById('pctPutri').textContent = pP.toFixed(0)+'% terpakai';
-  const sPF = document.getElementById('sisaPutriFmt');
-  sPF.textContent = (sisaP>=0?'Sisa ':'Lebih ')+formatRp(Math.abs(sisaP));
-  sPF.className = 'bc-sisa'+(sisaP>200000?' ok':sisaP>0?' warn':' danger');
+  document.getElementById('spentPutri').textContent=formatRp(totals.putri);
+  document.getElementById('progPutri').style.width=pP+'%';
+  document.getElementById('progPutri').className='bc-bar-fill'+(pP>=90?' over':' putri');
+  document.getElementById('pctPutri').textContent=pP.toFixed(0)+'% terpakai';
+  const sPF=document.getElementById('sisaPutriFmt');
+  sPF.textContent=(sisaP>=0?'Sisa ':'Lebih ')+formatRp(Math.abs(sisaP));
+  sPF.className='bc-sisa'+(sisaP>200000?' ok':sisaP>0?' warn':' danger');
 
   renderKategori(spent);
   renderTxn();
 }
 
 function renderKategori(spent) {
-  const el = document.getElementById('katList');
-  // Kumpulkan semua kategori yang ada di data + dari config
-  const allKat = new Set([
-    ...Object.keys(KATEGORI),
-    ...Object.keys(spent.abia||{}),
-    ...Object.keys(spent.putri||{})
-  ]);
-
-  let items = [];
-  allKat.forEach(name => {
-    const cfg = KATEGORI[name] || {budget:0, icon:'💸'};
-    const sa = (spent.abia||{})[name]||0;
-    const sp = (spent.putri||{})[name]||0;
-    const total = sa + sp;
-    if (currentTab === 'abia' && !sa) return;
-    if (currentTab === 'putri' && !sp) return;
-    if (total === 0 && cfg.budget === 0) return;
-    items.push({name, icon:cfg.icon, budget:cfg.budget, total, sa, sp});
+  const el=document.getElementById('katList');
+  const allKat=new Set([...Object.keys(KATEGORI),...Object.keys(spent.abia||{}),...Object.keys(spent.putri||{})]);
+  let items=[];
+  allKat.forEach(name=>{
+    const cfg=KATEGORI[name]||{budget:0,icon:'💸'};
+    const sa=(spent.abia||{})[name]||0, sp=(spent.putri||{})[name]||0, total=sa+sp;
+    if (currentTab==='abia'&&!sa) return;
+    if (currentTab==='putri'&&!sp) return;
+    if (total===0&&cfg.budget===0) return;
+    items.push({name,icon:cfg.icon,budget:cfg.budget,total,sa,sp});
   });
-
-  items.sort((a,b) => b.total - a.total);
-
-  if (!items.length) { el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div>Belum ada pengeluaran</div>'; return; }
-
-  el.innerHTML = items.map(i => {
-    const pct = i.budget>0 ? Math.min(100,(i.total/i.budget)*100) : (i.total>0?100:0);
-    const over = i.budget>0 && i.total > i.budget;
-    const subInfo = i.sa && i.sp ? `Abia ${formatRp(i.sa)} · Putri ${formatRp(i.sp)}` :
-                    i.sa ? `Dibayar Abia` : `Dibayar Putri`;
+  items.sort((a,b)=>b.total-a.total);
+  if (!items.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div>Belum ada pengeluaran</div>';return;}
+  el.innerHTML=items.map(i=>{
+    const pct=i.budget>0?Math.min(100,(i.total/i.budget)*100):(i.total>0?100:0);
+    const over=i.budget>0&&i.total>i.budget;
+    const subInfo=i.sa&&i.sp?`Abia ${formatRp(i.sa)} · Putri ${formatRp(i.sp)}`:i.sa?'Dibayar Abia':'Dibayar Putri';
     return `<div class="kat-item">
       <div class="kat-icon" style="background:${over?'#fff0f0':'#f0f9ff'}">${i.icon}</div>
       <div class="kat-info">
@@ -601,13 +633,13 @@ function renderKategori(spent) {
 }
 
 function renderTxn() {
-  const el = document.getElementById('txnList');
-  if (!allData.length) { el.innerHTML='<div class="empty-state"><div class="empty-icon">📝</div>Belum ada transaksi bulan ini</div>'; return; }
-  el.innerHTML = allData.map(t => {
-    const d = new Date(t.time);
-    const ds = d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-    const katBase = t.kat.startsWith('Lainnya:') ? 'Lainnya' : t.kat;
-    const icon = (KATEGORI[katBase]||{icon:'💸'}).icon;
+  const el=document.getElementById('txnList');
+  if (!allData.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📝</div>Belum ada transaksi bulan ini</div>';return;}
+  el.innerHTML=allData.map(t=>{
+    const d=new Date(t.time);
+    const ds=d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    const katBase=t.kat.startsWith('Lainnya:')?'Lainnya':t.kat;
+    const icon=(KATEGORI[katBase]||{icon:'💸'}).icon;
     return `<div class="txn-item">
       <div class="txn-dot ${t.who}"></div>
       <div class="txn-info">
@@ -620,35 +652,220 @@ function renderTxn() {
   }).join('');
 }
 
-function setTab(tab, el) {
-  currentTab = tab;
+function setTab(tab,el) {
+  currentTab=tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const {spent} = compute();
-  renderKategori(spent);
+  renderKategori(compute().spent);
 }
 
-// ── CETAK PDF ──
-function cetakLaporan() {
-  const now = new Date();
-  const periode = now.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+// ── LAPORAN AI ──
+function bukaLaporan() {
+  if (!allData.length) { showToast('⚠️ Belum ada data transaksi'); return; }
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  document.getElementById('modalBody').innerHTML = `<div class="laporan-loading"><div class="spinner"></div><div>Menganalisis data keuangan...</div></div>`;
+  laporanAiText = '';
+  generateLaporan();
+}
+
+function tutupModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) tutupModalLangsung();
+}
+function tutupModalLangsung() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
+async function generateLaporan() {
+  const {spent, totals} = compute();
+  const bA=GAJI.abia, bP=GAJI.putri;
+  const sisaA=bA-totals.abia, sisaP=bP-totals.putri;
+  const periode = new Date().toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+
+  // Siapkan data kategori untuk prompt
+  const katData = [];
+  const allKat = new Set([...Object.keys(KATEGORI),...Object.keys(spent.abia||{}),...Object.keys(spent.putri||{})]);
+  allKat.forEach(name=>{
+    const cfg=KATEGORI[name]||{budget:0};
+    const sa=(spent.abia||{})[name]||0, sp=(spent.putri||{})[name]||0, total=sa+sp;
+    if (total>0) katData.push({name, budget:cfg.budget, realisasi:total, selisih:cfg.budget-total, sa, sp});
+  });
+  katData.sort((a,b)=>b.realisasi-a.realisasi);
+
+  const prompt = `Kamu adalah analis keuangan keluarga yang membantu pasangan suami istri (Abia dan Putri) mengevaluasi keuangan bulanan mereka.
+
+DATA KEUANGAN ${periode.toUpperCase()}:
+
+Pendapatan:
+- Gaji Abia (Tgl 1): Rp ${fmt(bA)}
+- Gaji Putri (Tgl 15): Rp ${fmt(bP)}
+- Total Pendapatan: Rp ${fmt(bA+bP)}
+
+Realisasi Pengeluaran:
+- Total Abia: Rp ${fmt(totals.abia)} (${((totals.abia/bA)*100).toFixed(1)}% dari gaji)
+- Total Putri: Rp ${fmt(totals.putri)} (${((totals.putri/bP)*100).toFixed(1)}% dari gaji)
+- Total Semua: Rp ${fmt(totals.abia+totals.putri)}
+- Sisa Abia: Rp ${fmt(sisaA)}
+- Sisa Putri: Rp ${fmt(sisaP)}
+- Total Saldo Akhir: Rp ${fmt(sisaA+sisaP)}
+
+Detail per Kategori:
+${katData.map(k=>`- ${k.name}: Budget Rp ${fmt(k.budget||0)}, Realisasi Rp ${fmt(k.realisasi)}, Selisih Rp ${fmt(Math.abs(k.selisih))} (${k.selisih>=0?'hemat':'lebih'})${k.sa&&k.sp?`, dibayar Abia Rp ${fmt(k.sa)} + Putri Rp ${fmt(k.sp)}`:k.sa?`, dibayar Abia`:`, dibayar Putri`}`).join('\n')}
+
+Jumlah transaksi: ${allData.length} transaksi
+
+Buatkan laporan evaluasi keuangan bulanan yang:
+1. Dimulai dengan paragraf ringkasan kondisi keuangan bulan ini (santai tapi profesional)
+2. Highlight 3 kategori yang paling boros atau melebihi budget (jika ada)
+3. Highlight 3 kategori yang paling hemat atau efisien
+4. Analisis pola pengeluaran yang perlu diperhatikan
+5. 3 rekomendasi konkret untuk bulan depan
+6. Penutup yang memotivasi
+
+Gunakan bahasa Indonesia yang hangat dan personal. Sebut nama Abia dan Putri. Gunakan format yang rapi dengan judul per bagian. Panjang sekitar 400-500 kata.`;
+
+  // Build tabel ringkasan dulu
+  const tabelHtml = buildTabelHtml(katData, totals, sisaA, sisaP, periode);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{role:'user', content: prompt}]
+      })
+    });
+
+    const data = await response.json();
+    const aiText = data.content?.[0]?.text || 'Gagal generate narasi.';
+    laporanAiText = aiText;
+
+    document.getElementById('modalBody').innerHTML = tabelHtml + `
+      <div class="ai-narasi">
+        <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
+        <div class="ai-narasi-text">${aiText}</div>
+      </div>`;
+
+  } catch(e) {
+    document.getElementById('modalBody').innerHTML = tabelHtml + `
+      <div class="ai-narasi">
+        <div class="ai-narasi-header">⚠️ Narasi AI tidak tersedia</div>
+        <div class="ai-narasi-text" style="color:var(--muted)">Tidak dapat terhubung ke AI. Laporan tabel tetap tersedia untuk dicetak.</div>
+      </div>`;
+  }
+}
+
+function buildTabelHtml(katData, totals, sisaA, sisaP, periode) {
+  const bA=GAJI.abia, bP=GAJI.putri;
+  const totalPemasukan = bA+bP;
+  const totalKeluar = totals.abia+totals.putri;
+  const totalSisa = sisaA+sisaP;
+  const pctHemat = ((totalSisa/totalPemasukan)*100).toFixed(1);
+
+  const statClass = totalSisa>500000?'ok':totalSisa>0?'warn':'danger';
+
+  return `
+  <div class="laporan-content">
+    <div class="lap-section">
+      <div class="lap-section-title">📋 Ringkasan ${periode}</div>
+      <div class="lap-stat-grid">
+        <div class="lap-stat">
+          <div class="lap-stat-val" style="color:var(--abia)">${formatRp(totalPemasukan)}</div>
+          <div class="lap-stat-label">Total Pendapatan</div>
+        </div>
+        <div class="lap-stat">
+          <div class="lap-stat-val" style="color:var(--danger)">${formatRp(totalKeluar)}</div>
+          <div class="lap-stat-label">Total Pengeluaran</div>
+        </div>
+        <div class="lap-stat">
+          <div class="lap-stat-val ${statClass}">${formatRp(totalSisa)}</div>
+          <div class="lap-stat-label">Saldo Akhir (${pctHemat}% hemat)</div>
+        </div>
+      </div>
+      <div class="lap-stat-grid">
+        <div class="lap-stat">
+          <div class="lap-stat-val" style="color:var(--abia)">${formatRp(totals.abia)}</div>
+          <div class="lap-stat-label">Pengeluaran Abia</div>
+        </div>
+        <div class="lap-stat">
+          <div class="lap-stat-val" style="color:var(--putri)">${formatRp(totals.putri)}</div>
+          <div class="lap-stat-label">Pengeluaran Putri</div>
+        </div>
+        <div class="lap-stat">
+          <div class="lap-stat-val" style="color:var(--success)">${allData.length}</div>
+          <div class="lap-stat-label">Total Transaksi</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lap-section">
+      <div class="lap-section-title">📊 Detail per Kategori</div>
+      <table class="lap-table">
+        <thead>
+          <tr>
+            <th>Kategori</th>
+            <th>Budget</th>
+            <th>Realisasi</th>
+            <th>Selisih</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${katData.map(k=>{
+            const over = k.budget>0 && k.realisasi>k.budget;
+            const hemat = k.budget>0 && k.realisasi<=k.budget;
+            const selisih = k.budget>0 ? Math.abs(k.selisih) : null;
+            const rowClass = over?'over':hemat?'hemat':'';
+            const badge = over
+              ? `<span class="status-badge over">Lebih ${((k.realisasi/k.budget-1)*100).toFixed(0)}%</span>`
+              : k.budget>0
+              ? `<span class="status-badge hemat">Hemat ${((k.selisih/k.budget)*100).toFixed(0)}%</span>`
+              : `<span class="status-badge ok">–</span>`;
+            return `<tr class="${rowClass}">
+              <td>${KATEGORI[k.name]?.icon||'💸'} ${k.name}</td>
+              <td>${k.budget>0?formatRp(k.budget):'–'}</td>
+              <td>${formatRp(k.realisasi)}</td>
+              <td>${selisih!==null?(over?'-':'+')+'Rp '+fmt(selisih):'–'}</td>
+              <td>${badge}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+        <tfoot>
+          <tr class="lap-total">
+            <td>TOTAL</td>
+            <td>${formatRp(bA+bP)}</td>
+            <td>${formatRp(totalKeluar)}</td>
+            <td style="color:${totalSisa>=0?'var(--success)':'var(--danger)'}">
+              ${totalSisa>=0?'+':'-'}${formatRp(Math.abs(totalSisa))}
+            </td>
+            <td><span class="status-badge ${totalSisa>=0?'hemat':'over'}">${pctHemat}% hemat</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>`;
+}
+
+function cetakDariModal() {
+  const periode = new Date().toLocaleDateString('id-ID',{month:'long',year:'numeric'});
   document.getElementById('printPeriode').textContent =
-    `Periode: ${periode} · Dicetak: ${now.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
-  // Pastikan tab semua aktif saat print
-  currentTab = 'semua';
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-  const {spent} = compute();
-  renderKategori(spent);
-  setTimeout(() => window.print(), 200);
+    `Periode: ${periode} · Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
+  document.getElementById('printLaporan').innerHTML = document.getElementById('modalBody').innerHTML;
+  document.getElementById('printLaporan').style.display = 'block';
+  tutupModalLangsung();
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{ document.getElementById('printLaporan').style.display='none'; }, 1000);
+  }, 300);
 }
 
 // ── UTILS ──
-function formatRp(n) { return 'Rp '+Math.abs(n).toLocaleString('id-ID'); }
-function fmt(n) { return n.toLocaleString('id-ID'); }
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+function formatRp(n){return 'Rp '+Math.abs(n).toLocaleString('id-ID');}
+function fmt(n){return Math.abs(n).toLocaleString('id-ID');}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
 
