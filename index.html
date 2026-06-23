@@ -754,8 +754,7 @@ Gunakan bahasa Indonesia yang hangat dan personal. Sebut nama Abia dan Putri. Gu
         laporanAiText = json.text;
         narasi.innerHTML = `
           <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
-          <div class="ai-narasi-text">${json.text.replace(/
-/g,'<br>')}</div>`;
+          <div class="ai-narasi-text">${json.text.split('\n').join('<br>')}</div>`;
       } else {
         narasi.innerHTML = `
           <div class="ai-narasi-header">⚠️ Gagal generate narasi</div>
