@@ -744,34 +744,27 @@ Gunakan bahasa Indonesia yang hangat dan personal. Sebut nama Abia dan Putri. Gu
   }
 
   try {
-    // Panggil AI lewat Apps Script sebagai proxy (JSONP)
-    const cbName = 'aiCb_' + Date.now();
-    const script = document.createElement('script');
-    window[cbName] = function(json) {
-      delete window[cbName]; script.remove(); clearTimeout(timer);
-      const narasi = document.querySelector('.ai-narasi');
-      if (json && json.status === 'ok') {
-        laporanAiText = json.text;
-        narasi.innerHTML = `
-          <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
-          <div class="ai-narasi-text">${json.text.split('\n').join('<br>')}</div>`;
-      } else {
-        narasi.innerHTML = `
-          <div class="ai-narasi-header">⚠️ Gagal generate narasi</div>
-          <div class="ai-narasi-text" style="color:var(--muted)">${(json&&json.message)||'Terjadi kesalahan.'}</div>`;
-      }
-    };
-    const timer = setTimeout(() => {
-      delete window[cbName]; script.remove();
-      const narasi = document.querySelector('.ai-narasi');
-      if (narasi) narasi.innerHTML = `
-        <div class="ai-narasi-header">⚠️ Timeout</div>
-        <div class="ai-narasi-text" style="color:var(--muted)">AI butuh waktu lebih lama. Coba generate ulang.</div>`;
-    }, 30000);
-    // Kirim prompt via GET parameter (JSONP)
-    const encodedPrompt = encodeURIComponent(prompt);
-    script.src = `${scriptUrl}?action=ai&prompt=${encodedPrompt}&callback=${cbName}`;
-    document.head.appendChild(script);
+    // Panggil AI lewat Cloudflare Worker (tidak kena CORS)
+    const CF_WORKER_URL = 'https://kas-ai.muhammad-abia.workers.dev';
+    const resp = await fetch(CF_WORKER_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+    const data = await resp.json();
+    const narasi = document.querySelector('.ai-narasi');
+    if (data.content && data.content[0]) {
+      laporanAiText = data.content[0].text;
+      narasi.innerHTML = `
+        <div class="ai-narasi-header">🤖 Analisis & Evaluasi AI</div>
+        <div class="ai-narasi-text">${laporanAiText.split('\n').join('<br>')}</div>`;
+    } else {
+      narasi.innerHTML = `
+        <div class="ai-narasi-header">⚠️ Gagal generate narasi</div>
+        <div class="ai-narasi-text" style="color:var(--muted)">${JSON.stringify(data)}</div>`;
+    }
 
   } catch(e) {
     document.querySelector('.ai-narasi').innerHTML = `
